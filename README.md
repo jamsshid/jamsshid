@@ -1,5 +1,5 @@
 # 💫 About Me:
-I'm Web and Telegram bot Developer.<br>Programming languages: Python<br>Technologies: Django, Aiogram, SQL, Git
+I'm Backend Developer.<br>Programming languages: Python<br>Technologies: Django, Aiogram, SQL, Git
 
 
 ## 🌐 Socials:
