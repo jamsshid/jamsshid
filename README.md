@@ -1,5 +1,5 @@
 # 💫 About Me:
-I'm Backend Developer.<br>Programming languages: Python<br>Technologies: Django, Aiogram, SQL, Git
+Python Backend Developer · Django · FastAPI · Docker · Riga, Latvia
 
 
 ## 🌐 Socials:
