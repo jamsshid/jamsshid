@@ -1,5 +1,5 @@
 # 💫 About Me:
-Python Backend Developer · Django · FastAPI · Docker · Riga, Latvia
+Python Backend Developer · Django · Docker · Riga, Latvia
 
 
 ## 🌐 Socials:
