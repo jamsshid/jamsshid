@@ -1,21 +1,114 @@
-# 💫 About Me:
-lazy software & ai engineer
+<div align="center">
 
+<table width="100%">
+<tr>
+<td width="64%" valign="middle">
+<p><sub>RECRUITER SIGNAL BRIEF · jamsshid</sub></p>
+<h1>Jamshid Omonkeldiev</h1>
+<h2>Python Developer</h2>
+<p>Life is getting better with coding!</p>
+<p><strong>● Building and sharing work in public</strong></p>
+<p><sub>Based in Riga, Latvia</sub></p>
+<p><a href="https://github.com/jamsshid">GitHub</a></p>
+</td>
+<td width="36%" valign="middle" align="center">
+<img src="https://avatars.githubusercontent.com/u/211209409?u=b96505ede3eaf485ad07630e15c70ca7c5a88e1a&amp;v=4" width="180" alt="Jamshid Omonkeldiev GitHub avatar" />
+</td>
+</tr>
+</table>
+</div>
 
-## 🌐 Socials:
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/jamsshid) [![X](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/jamsshid) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:omonkeldievj@gmail.com) 
+<h2>What teams can evaluate quickly</h2>
 
-# 💻 Tech Stack:
-![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase) ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white) ![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white) ![Netlify](https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7) ![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white) ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white) ![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi) ![Elasticsearch](https://img.shields.io/badge/elasticsearch-%230377CC.svg?style=for-the-badge&logo=elasticsearch&logoColor=white) ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white) ![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) ![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white) ![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white) ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white) ![GitLab CI](https://img.shields.io/badge/gitlab%20CI-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white) ![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white) ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white) ![ElasticSearch](https://img.shields.io/badge/-ElasticSearch-005571?style=for-the-badge&logo=elasticsearch) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white) ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
-# 📊 GitHub Stats:
-![](https://github-readme-stats.shion.dev/api?username=jamsshid&theme=dark&hide_border=false&include_all_commits=true&count_private=true)<br/>
-![](https://streak-stats.demolab.com/?user=jamsshid&theme=dark&hide_border=false)<br/>
-![](https://github-readme-stats.shion.dev/api/top-langs/?username=jamsshid&theme=dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
+<table width="100%">
+<tr>
+<td width="33%" valign="top"><h3>Role fit</h3><p>Python Developer · Python · CSS · HTML</p></td>
+<td width="33%" valign="top"><h3>Public proof</h3><p>15 repositories · 5 stars</p></td>
+<td width="33%" valign="top"><h3>Momentum</h3><p>92 contributions · 22 active days</p></td>
+</tr>
+</table>
 
-## 🏆 GitHub Trophies
-![](https://github-profile-trophy.vercel.app/?username=jamsshid&theme=radical&no-frame=false&no-bg=true&margin-w=4)
+<p><sub>Life is getting better with coding!</sub></p>
 
-### 🔝 Top Contributed Repo
-![](https://github-contributor-stats.vercel.app/api?username=jamsshid&limit=5&theme=dark&combine_all_yearly_contributions=true)
+<h2>Proof at a glance</h2>
 
-<!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
+<table width="100%">
+<tr>
+<td width="25%" align="center"><strong>15</strong><br /><sub>Repositories</sub></td>
+<td width="25%" align="center"><strong>5</strong><br /><sub>Stars</sub></td>
+<td width="25%" align="center"><strong>92</strong><br /><sub>Contributions</sub></td>
+<td width="25%" align="center"><strong>2</strong><br /><sub>Followers</sub></td>
+</tr>
+</table>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://www.gitskins.com/api/section/stats?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&v=recruiter-stats-1&mode=light" />
+  <img src="https://www.gitskins.com/api/section/stats?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&v=recruiter-stats-1&mode=dark" width="100%" alt="Jamshid Omonkeldiev GitHub proof metrics" />
+</picture>
+</p>
+
+<h2>Selected work</h2>
+
+<table width="100%">
+<tr>
+<td width="58%" valign="top">
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://www.gitskins.com/api/section/projects?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&repos=jamsshid%2Fecommerce_api%2Cjamsshid%2Ffinance-tracker%2Cjamsshid%2Ffids_monro_bot&v=recruiter-projects-1&mode=light" />
+  <img src="https://www.gitskins.com/api/section/projects?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&repos=jamsshid%2Fecommerce_api%2Cjamsshid%2Ffinance-tracker%2Cjamsshid%2Ffids_monro_bot&v=recruiter-projects-1&mode=dark" width="100%" alt="Jamshid Omonkeldiev selected projects" />
+</picture>
+</td>
+<td width="42%" valign="top">
+<h3><a href="https://github.com/jamsshid/ecommerce_api">ecommerce_api</a></h3>
+<p>A selected public project.</p>
+<p><sub>Python · ⭐ 1 · 🍴 0</sub></p>
+<p><a href="https://github.com/jamsshid/ecommerce_api">Read the repository →</a></p>
+</td>
+</tr>
+</table>
+
+<table width="100%">
+<tr>
+<td width="33%" valign="top"><h3><a href="https://github.com/jamsshid/finance-tracker">finance-tracker</a></h3><p>A selected public project.</p><p><sub>Python · ⭐ 1</sub></p></td>
+<td width="33%" valign="top"><h3><a href="https://github.com/jamsshid/fids_monro_bot">fids_monro_bot</a></h3><p>Telegram bot for Fids Monro cafe</p><p><sub>Open source · ⭐ 1</sub></p></td>
+</tr>
+</table>
+
+<h2>Technical toolkit</h2>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://www.gitskins.com/api/section/stack?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&v=recruiter-stack-1&mode=light" />
+  <img src="https://www.gitskins.com/api/section/stack?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&v=recruiter-stack-1&mode=dark" width="100%" alt="Jamshid Omonkeldiev technology stack" />
+</picture>
+</p>
+
+<table width="100%">
+<tr>
+<td width="20%" align="center"><strong>Python</strong><br /><sub>35% of public code</sub></td>
+<td width="20%" align="center"><strong>CSS</strong><br /><sub>26% of public code</sub></td>
+<td width="20%" align="center"><strong>HTML</strong><br /><sub>20% of public code</sub></td>
+<td width="20%" align="center"><strong>JavaScript</strong><br /><sub>19% of public code</sub></td>
+<td width="20%" align="center"><strong>Dockerfile</strong><br /><sub>0% of public code</sub></td>
+</tr>
+</table>
+
+<h2>Consistency signal</h2>
+
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://www.gitskins.com/api/section/heatmap?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&v=recruiter-heatmap-1&mode=light" />
+  <img src="https://www.gitskins.com/api/section/heatmap?username=jamsshid&theme=github-dark&avatar=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F211209409%3Fu%3Db96505ede3eaf485ad07630e15c70ca7c5a88e1a%26v%3D4&v=recruiter-heatmap-1&mode=dark" width="100%" alt="Jamshid Omonkeldiev contribution activity" />
+</picture>
+</p>
+
+<hr />
+
+<table width="100%">
+<tr>
+<td width="62%" valign="middle"><h2>Let’s talk about the next build</h2><p>Open to thoughtful teams, ambitious products, and useful engineering work.</p></td>
+<td width="38%" valign="middle" align="right"><a href="https://github.com/jamsshid">GitHub</a></td>
+</tr>
+</table>
+
+<p align="center"><sub>Jamshid Omonkeldiev · recruiter-ready profile generated with <a href="https://www.gitskins.com/readme-generator">GitSkins</a></sub></p>
