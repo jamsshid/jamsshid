@@ -123,7 +123,7 @@ def start(w,h,delay,static,fonts):
       .enter{{opacity:0;animation:rise .8s cubic-bezier(.2,.75,.2,1) {delay:.2f}s both}}
       @keyframes reveal{{to{{stroke-dashoffset:0}}}}
       .line{{stroke-dasharray:1000;stroke-dashoffset:1000;animation:reveal 1.5s ease {delay+.35:.2f}s forwards}}
-      @media(prefers-reduced-motion:reduce){{*,*::before,*::after{{animation:none!important;transition:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}}}}
+      @media(prefers-reduced-motion:reduce){{*,*::before,*::after{{animation:none!important;transition:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}}.smil{{display:none!important}}}}
     """
     if static: motion="@media(prefers-reduced-motion:reduce){*{animation:none!important}}"
     return f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
@@ -147,12 +147,13 @@ def hero(fonts,static):
     save("01-hero.svg",s)
 
 def links(fonts,static):
-    s=start(1000,120,.55,static,fonts)
-    items=[("GITHUB","github.com/jamsshid","https://github.com/jamsshid","GH"),("LINKEDIN","linkedin.com/in/jamsshid","https://linkedin.com/in/jamsshid","in"),("PORTFOLIO","Personal website","https://jamsshid.github.io/portfolio","↗")]
-    for i,(label,detail,url,mark) in enumerate(items):
-        x=2+i*333
-        s+=f'<a xlink:href="{url}" target="_blank"><g class="enter" style="animation-delay:{0 if static else .55+i*.14:.2f}s"><rect x="{x}" y="2" width="323" height="108" rx="16" fill="{WHITE}" stroke="{BORDER}"/><rect x="{x+17}" y="22" width="42" height="42" rx="12" fill="{BLUE_PALE}"/><text x="{x+38}" y="49" text-anchor="middle" font-size="16" font-weight="700" fill="{BLUE}">{mark}</text><text x="{x+76}" y="40" class="mono" font-size="11" fill="{BLUE}">{label}</text><text x="{x+76}" y="63" font-size="13" fill="{INK}">{detail}</text></g></a>'
-    save("02-links.svg",s)
+    items=[("github","GITHUB","github.com/jamsshid","https://github.com/jamsshid","GH"),
+           ("linkedin","LINKEDIN","linkedin.com/in/jamsshid","https://linkedin.com/in/jamsshid","in"),
+           ("portfolio","PORTFOLIO","Personal website","https://jamsshid.github.io/portfolio","↗")]
+    for i,(slug,label,detail,url,mark) in enumerate(items):
+        s=start(320,108,.55+i*.18,static,fonts)
+        s+=f'<a xlink:href="{url}" target="_blank"><g class="enter"><rect x="1" y="1" width="318" height="106" rx="16" fill="{WHITE}" stroke="{BORDER}"/><rect x="17" y="21" width="42" height="42" rx="12" fill="{BLUE_PALE}"/><text x="38" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="{BLUE}">{mark}</text><text x="76" y="39" class="mono" font-size="11" fill="{BLUE}">{label}</text><text x="76" y="63" font-size="13" fill="{INK}">{detail}</text></g></a>'
+        save(f"tile-{slug}.svg",s)
 
 def activity(data,fonts,static):
     s=start(1000,304,1.0,static,fonts)+bg(1000,304)
@@ -167,7 +168,7 @@ def activity(data,fonts,static):
         x=42+i*78; h=max(2,104*m["count"]/maxv)
         s+=f'<rect x="{x}" y="{248-h}" width="44" height="{h}" rx="6" fill="{BLUE}" opacity=".9"/>'
         if not static:
-            s+=f'<animate attributeName="height" from="0" to="{h:.1f}" dur="1s" begin="{1.3+i*.06:.2f}s" fill="freeze"/>'
+            s+=f'<animate class="smil" attributeName="height" from="0" to="{h:.1f}" dur="1s" begin="{1.3+i*.06:.2f}s" fill="freeze"/>'
         s+=f'<text x="{x+22}" y="271" text-anchor="middle" class="mono" font-size="9" fill="{MUTED}">{m["month"][5:]}</text>'
     if not months:s+=f'<text x="42" y="210" font-size="14" fill="{MUTED}">Monthly contribution history appears after the first daily refresh.</text>'
     s+=f'<text x="968" y="289" text-anchor="end" class="mono" font-size="9" fill="{MUTED}">UPDATED {data.get("updated_at","—")}</text>'
