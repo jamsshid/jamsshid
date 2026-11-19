@@ -1,0 +1,29 @@
+{
+  "days": [],
+  "featured_repos": [
+    {
+      "name": "ecommerce_api",
+      "url": "https://github.com/jamsshid/ecommerce_api",
+      "description": "E-commerce backend API",
+      "language": "Python"
+    },
+    {
+      "name": "finance-tracker",
+      "url": "https://github.com/jamsshid/finance-tracker",
+      "description": "Personal finance tracking project",
+      "language": "Python"
+    },
+    {
+      "name": "fids_monro_bot",
+      "url": "https://github.com/jamsshid/fids_monro_bot",
+      "description": "Telegram bot built with Python",
+      "language": "Python"
+    }
+  ],
+  "profile": {
+    "name": "Jamshid Omonkeldiev",
+    "tagline": "Python Backend Developer · Backend + AI",
+    "location": "Riga, Latvia",
+    "focus": "Building reliable backend systems and AI-powered products"
+  }
+}
