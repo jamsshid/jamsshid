@@ -30,8 +30,8 @@ jobs:
         run: python generate_cards.py
       - name: Commit refreshed data and cards
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "jamsshid"
+          git config user.email "211209409+jamsshid@users.noreply.github.com"
           git add data/contributions.json cards/
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh animated profile cards"
