@@ -136,8 +136,7 @@ def save(name,body):
     (OUT/name).write_text(body+"</svg>\n",encoding="utf-8")
 
 def hero(fonts,static):
-    s=start(1000,238,0,static,fonts)+bg(1000,238,"url(#hero-gradient)")
-    s=s.replace("</style>",'<linearGradient id="hero-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#EFF4FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></style>')
+    s=start(1000,238,0,static,fonts)+bg(1000,238,"#EFF4FF")
     s+='<circle cx="900" cy="22" r="120" fill="#DBE5FF" opacity=".55"/><g class="enter">'
     s+=f'<text x="44" y="48" class="mono" font-size="12" letter-spacing="2" fill="{BLUE}">PYTHON BACKEND DEVELOPER · RIGA, LATVIA</text>'
     s+=f'<text x="44" y="115" font-size="42" font-weight="800" fill="{INK}">{e(NAME)}</text>'
@@ -166,9 +165,10 @@ def activity(data,fonts,static):
     maxv=max([m["count"] for m in months] or [1])
     for i,m in enumerate(months):
         x=42+i*78; h=max(2,104*m["count"]/maxv)
-        s+=f'<rect x="{x}" y="{248-h}" width="44" height="{h}" rx="6" fill="{BLUE}" opacity=".9"/>'
+        s+=f'<rect x="{x}" y="{248-h}" width="44" height="{h}" rx="6" fill="{BLUE}" opacity=".9">'
         if not static:
             s+=f'<animate class="smil" attributeName="height" from="0" to="{h:.1f}" dur="1s" begin="{1.3+i*.06:.2f}s" fill="freeze"/>'
+        s+='</rect>'
         s+=f'<text x="{x+22}" y="271" text-anchor="middle" class="mono" font-size="9" fill="{MUTED}">{m["month"][5:]}</text>'
     if not months:s+=f'<text x="42" y="210" font-size="14" fill="{MUTED}">Monthly contribution history appears after the first daily refresh.</text>'
     s+=f'<text x="968" y="289" text-anchor="end" class="mono" font-size="9" fill="{MUTED}">UPDATED {data.get("updated_at","—")}</text>'
