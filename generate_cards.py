@@ -156,7 +156,7 @@ def hero(fonts,static):
     s+=f'<text x="46" y="157" font-size="16" fill="{MUTED}">{e(TAGLINE)}</text>'
     s+=f'<text x="46" y="200" class="mono" font-size="12" fill="{BLUE_DARK}">PYTHON  /  DJANGO  /  FASTAPI  /  POSTGRESQL  /  DOCKER</text></g>'
     s+=f'<circle cx="858" cy="119" r="65" fill="{WHITE}" stroke="{BORDER}" stroke-width="2"/><text x="858" y="138" text-anchor="middle" font-size="54" font-weight="800" fill="{BLUE}">J</text><circle cx="910" cy="171" r="9" fill="{GREEN}" stroke="{WHITE}" stroke-width="4"/>'
-    s+="</g></a>"
+    s+="</a>"
     save("01-hero.svg",s)
 
 def links(fonts,static):
@@ -252,6 +252,7 @@ def graph(data,fonts,static):
         s+=f'<text x="{legend_x+5*18+5}" y="{legend_y}" font-size="12" fill="{muted}">More</text>'
     else:
         s+=f'<text x="30" y="100" font-size="14" fill="{muted}">Contribution data is not available yet.</text>'
+    s+="</a>"
     s+="</a>"
     save("99-contributions.svg",s)
 
