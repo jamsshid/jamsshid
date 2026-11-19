@@ -32,15 +32,3 @@
 <p align="center">
   <a href="https://github.com/jamsshid/fids_monro_bot"><img src="cards/repo-03.svg" width="100%" alt="Fids Monro Bot repository"></a>
 </p>
-
-<p align="center"><sub>Python · SVG · GitHub Actions · Plus Jakarta Sans · JetBrains Mono</sub></p>
-
-## Regenerate locally
-
-```bash
-python -m pip install -r requirements.txt
-python generate_cards.py
-STATIC=1 python generate_cards.py  # final frame for screenshots
-```
-
-The scheduled GitHub Action refreshes `data/contributions.json`, renders the SVG cards and commits changes daily.
