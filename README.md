@@ -16,19 +16,3 @@
 <p align="center"><img src="cards/repo-01.svg" width="100%" alt="Featured project: E-Commerce API"></p>
 <p align="center"><img src="cards/repo-02.svg" width="100%" alt="Featured project: Finance Tracker"></p>
 <p align="center"><img src="cards/repo-03.svg" width="100%" alt="Featured project: Fids Monro Bot"></p>
-
-<p align="center">
-  <img src="cards/99-contributions.svg" width="100%" alt="GitHub contribution graph in the portfolio blue">
-</p>
-
-<p align="center"><sub>Python · SVG · GitHub Actions · Plus Jakarta Sans · JetBrains Mono</sub></p>
-
-## Regenerate locally
-
-```bash
-python -m pip install -r requirements.txt
-python generate_cards.py
-STATIC=1 python generate_cards.py  # render the final frame for screenshots
-```
-
-The scheduled GitHub Action refreshes `data/contributions.json` daily, renders the SVG cards and commits changed output. Run it manually from **Actions → Refresh animated profile cards → Run workflow**.
