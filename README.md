@@ -4,22 +4,18 @@
 </p>
 
 <p align="center">
-  <img src="cards/02-links.svg" width="100%" alt="GitHub, LinkedIn and portfolio links">
+  <a href="https://github.com/jamsshid"><img src="cards/tile-github.svg" width="32.5%" alt="GitHub"></a>
+  <a href="https://linkedin.com/in/jamsshid"><img src="cards/tile-linkedin.svg" width="32.5%" alt="LinkedIn"></a>
+  <a href="https://jamsshid.github.io/portfolio"><img src="cards/tile-portfolio.svg" width="32.5%" alt="Portfolio"></a>
 </p>
 
 <p align="center">
   <img src="cards/03-activity.svg" width="100%" alt="Monthly contributions, current streak, active days and busiest weekday">
 </p>
 
-<p align="center">
-  <img src="cards/repo-01.svg" width="100%" alt="Featured project: E-Commerce API">
-</p>
-<p align="center">
-  <img src="cards/repo-02.svg" width="100%" alt="Featured project: Finance Tracker">
-</p>
-<p align="center">
-  <img src="cards/repo-03.svg" width="100%" alt="Featured project: Fids Monro Bot">
-</p>
+<p align="center"><img src="cards/repo-01.svg" width="100%" alt="Featured project: E-Commerce API"></p>
+<p align="center"><img src="cards/repo-02.svg" width="100%" alt="Featured project: Finance Tracker"></p>
+<p align="center"><img src="cards/repo-03.svg" width="100%" alt="Featured project: Fids Monro Bot"></p>
 
 <p align="center">
   <img src="cards/99-contributions.svg" width="100%" alt="GitHub contribution graph in the portfolio blue">
@@ -35,4 +31,4 @@ python generate_cards.py
 STATIC=1 python generate_cards.py  # render the final frame for screenshots
 ```
 
-The scheduled GitHub Action refreshes `data/contributions.json` daily, renders the SVG cards and commits changed output. To run it manually, use **Actions → Refresh animated profile cards → Run workflow**.
+The scheduled GitHub Action refreshes `data/contributions.json` daily, renders the SVG cards and commits changed output. Run it manually from **Actions → Refresh animated profile cards → Run workflow**.
