@@ -177,7 +177,7 @@ def activity(data,fonts,static):
 def repo_card(repo,index,fonts,static):
     s=start(1000,152,1.65+index*.38,static,fonts)+bg(1000,152)
     url=repo.get("url",f"https://github.com/{USER}/{repo['slug']}")
-    s+=f'<a xlink:href="{url}" target="_blank"><g class="enter"><rect x="26" y="26" width="52" height="52" rx="14" fill="{BLUE_PALE}"/><text x="52" y="61" text-anchor="middle" font-size="23" font-weight="700" fill="{BLUE}">{"</>"}</text><text x="104" y="48" font-size="21" font-weight="700" fill="{INK}">{e(repo["name"])}</text><text x="104" y="78" font-size="14" fill="{MUTED}">{e(repo.get("description",""))}</text><text x="104" y="116" class="mono" font-size="11" fill="{BLUE}">{e(repo.get("stack",""))}</text><text x="952" y="51" text-anchor="end" font-size="12" fill="{BLUE}">OPEN REPOSITORY ↗</text></g></a>'
+    s+=f'<a xlink:href="{url}" target="_blank"><g class="enter"><rect x="26" y="26" width="52" height="52" rx="14" fill="{BLUE_PALE}"/><text x="52" y="61" text-anchor="middle" font-size="23" font-weight="700" fill="{BLUE}">&lt;/&gt;</text><text x="104" y="48" font-size="21" font-weight="700" fill="{INK}">{e(repo["name"])}</text><text x="104" y="78" font-size="14" fill="{MUTED}">{e(repo.get("description",""))}</text><text x="104" y="116" class="mono" font-size="11" fill="{BLUE}">{e(repo.get("stack",""))}</text><text x="952" y="51" text-anchor="end" font-size="12" fill="{BLUE}">OPEN REPOSITORY ↗</text></g></a>'
     save(f"repo-{index+1:02d}.svg",s)
 
 def graph(data,fonts,static):
