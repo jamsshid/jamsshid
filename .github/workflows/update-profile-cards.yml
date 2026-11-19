@@ -2,11 +2,15 @@ name: Refresh animated profile cards
 
 on:
   schedule:
-    - cron: "17 3 * * *"
+    - cron: "17 4 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: profile-cards
+  cancel-in-progress: false
 
 jobs:
   render:
@@ -16,65 +20,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Fetch contribution calendar
+      - name: Install font subsetting dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Refresh GitHub contribution data
         env:
-          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python - <<'PY'
-          import json, os, urllib.request
-          query = """query { user(login: "jamsshid") {
-            contributionsCollection { contributionCalendar {
-              totalContributions weeks { contributionDays { date contributionCount } }
-            }}
-          }}"""
-          req = urllib.request.Request(
-            "https://api.github.com/graphql",
-            data=json.dumps({"query": query}).encode(),
-            headers={"Authorization": "Bearer " + os.environ["GH_TOKEN"],
-                     "Content-Type": "application/json"})
-          with urllib.request.urlopen(req) as response:
-            payload = json.load(response)
-          calendar = payload["data"]["user"]["contributionsCollection"]["contributionCalendar"]
-          days = [day for week in calendar["weeks"] for day in week["contributionDays"]]
-          active = [d for d in days if d["contributionCount"]]
-          longest = current = run = 0
-          for d in days:
-            run = run + 1 if d["contributionCount"] else 0
-            longest = max(longest, run)
-          for d in reversed(days):
-            if d["contributionCount"]: current += 1
-            else: break
-          out = {
-            "days": [{"date":d["date"],"count":d["contributionCount"]} for d in days],
-            "total_contributions": calendar["totalContributions"],
-            "active_days": len(active),
-            "current_streak": current,
-            "longest_streak": longest,
-            "featured_repos": [
-              {"name":"ecommerce_api","url":"https://github.com/jamsshid/ecommerce_api","description":"E-commerce backend API","language":"Python"},
-              {"name":"finance-tracker","url":"https://github.com/jamsshid/finance-tracker","description":"Personal finance tracking project","language":"Python"},
-              {"name":"fids_monro_bot","url":"https://github.com/jamsshid/fids_monro_bot","description":"Telegram bot built with Python","language":"Python"}
-            ],
-            "profile": {
-              "name":"Jamshid Omonkeldiev",
-              "tagline":"Python Backend Developer · Backend + AI",
-              "location":"Riga, Latvia",
-              "focus":"Building reliable backend systems and AI-powered products"
-            }
-          }
-          os.makedirs("data", exist_ok=True)
-          with open("data/contributions.json","w") as f: json.dump(out,f,indent=2)
-          PY
-      - name: Install optional font tooling
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fonttools
-      - name: Render SVG cards
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python generate_cards.py --refresh-data
+      - name: Render animated SVG cards
         run: python generate_cards.py
       - name: Commit refreshed data and cards
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/contributions.json cards/
-          git diff --cached --quiet || git commit -m "chore: refresh animated profile cards"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh animated profile cards"
+            git push
+          fi
