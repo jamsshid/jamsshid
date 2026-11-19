@@ -11,11 +11,6 @@
   <a href="https://jamsshid.github.io/portfolio"><img src="cards/tile-portfolio.svg" width="32.5%" alt="Portfolio"></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/jamsshid?tab=overview#contributions">
-    <img src="cards/03-activity.svg" width="100%" alt="Contribution activity — open GitHub contributions">
-  </a>
-</p>
 
 <p align="center">
   <a href="https://github.com/jamsshid/ecommerce_api"><img src="cards/repo-01.svg" width="100%" alt="E-Commerce API repository"></a>
@@ -25,4 +20,10 @@
 </p>
 <p align="center">
   <a href="https://github.com/jamsshid/fids_monro_bot"><img src="cards/repo-03.svg" width="100%" alt="Fids Monro Bot repository"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/jamsshid?tab=overview#contributions">
+    <img src="cards/03-activity.svg" width="100%" alt="Contribution activity — open GitHub contributions">
+  </a>
 </p>
