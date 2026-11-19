@@ -192,23 +192,52 @@ def repo_card(repo,index,fonts,static):
     save(f"repo-{index+1:02d}.svg",s)
 
 def graph(data,fonts,static):
-    s=start(1000,178,3.0,static,fonts)+bg(1000,178)
-    s+=f'<text x="28" y="33" font-size="19" font-weight="700" fill="{INK}">Contribution graph</text>'
     days=data.get("days",[])
-    palette=["#EFF4FF","#BED4FD","#7EA6FA","#3B6FF5","#1D4FD7"]
+    s=start(1000,232,3.0,static,fonts)+bg(1000,232)
+    total=data.get("total_contributions",sum(int(d.get("count",0)) for d in days))
+    s+=f'<text x="28" y="32" font-size="20" font-weight="600" fill="{INK}">{total} contributions in the last year</text>'
+    palette=["#161B22","#DBEAFE","#93C5FD","#3B82F6","#1D4ED8"]
     if days:
-        first=date.fromisoformat(days[0]["date"]); start_day=first-timedelta(days=first.weekday())
-        mapping={d["date"]:d["count"] for d in days}
-        for i in range(53*7):
-            dt=start_day+timedelta(days=i)
-            if dt>date.today():break
-            n=mapping.get(dt.isoformat(),0); level=0 if n==0 else 1 if n<3 else 2 if n<6 else 3 if n<10 else 4
-            x=28+(i//7)*17; y=48+(i%7)*16
-            s+=f'<rect x="{x}" y="{y}" width="12" height="11" rx="2" fill="{palette[level]}"><title>{dt.isoformat()}: {n} contributions</title></rect>'
-    else:s+=f'<text x="28" y="90" font-size="14" fill="{MUTED}">Contribution activity will appear after the first daily refresh.</text>'
-    s+=f'<text x="28" y="165" class="mono" font-size="9" fill="{MUTED}">LESS</text>'
-    for i,c in enumerate(palette):s+=f'<rect x="{72+i*17}" y="156" width="11" height="10" rx="2" fill="{c}"/>'
-    s+=f'<text x="165" y="165" class="mono" font-size="9" fill="{MUTED}">MORE</text>'
+        parsed=[(date.fromisoformat(d["date"]),int(d.get("count",0))) for d in days]
+        first=parsed[0][0]
+        # GitHub contribution weeks start on Sunday (weekday index 0).
+        calendar_start=first-timedelta(days=(first.weekday()+1)%7)
+        last=parsed[-1][0]
+        left,cell,gap,grid_top=78,12,4,76
+        step=cell+gap
+        # Month headings sit above the first week containing each month.
+        months=[]
+        cursor=date(calendar_start.year,calendar_start.month,1)
+        while cursor<=last:
+            month_date=max(cursor,calendar_start)
+            col=(month_date-calendar_start).days//7
+            label=cursor.strftime("%b")
+            if not months or months[-1][1]!=col:
+                months.append((label,col))
+            cursor=(date(cursor.year+1,1,1) if cursor.month==12 else date(cursor.year,cursor.month+1,1))
+        for label,col in months:
+            x=left+col*step
+            s+=f'<text x="{x}" y="61" font-size="13" fill="{MUTED}">{label}</text>'
+        # GitHub-style weekday labels; rows are Sunday through Saturday.
+        for label,row in [("Mon",1),("Wed",3),("Fri",5)]:
+            y=grid_top+row*step+10
+            s+=f'<text x="50" y="{y}" text-anchor="end" font-size="12" fill="{MUTED}">{label}</text>'
+        for day,count in parsed:
+            offset=(day-calendar_start).days
+            col,row=offset//7,(day.weekday()+1)%7
+            level=0 if count==0 else 1 if count<3 else 2 if count<6 else 3 if count<10 else 4
+            x,y=left+col*step,grid_top+row*step
+            color=palette[level]
+            s+=f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.5" fill="{color}"><title>{day.isoformat()}: {count} contributions</title></rect>'
+        legend_y=210
+        s+=f'<text x="52" y="{legend_y+10}" font-size="11" fill="{MUTED}">Less</text>'
+        legend_x=84
+        for i,color in enumerate(palette):
+            s+=f'<rect x="{legend_x+i*18}" y="{legend_y}" width="12" height="12" rx="2.5" fill="{color}"/>'
+        s+=f'<text x="{legend_x+5*18+5}" y="{legend_y+10}" font-size="11" fill="{MUTED}">More</text>'
+    else:
+        s+=f'<text x="28" y="115" font-size="14" fill="{MUTED}">Contribution activity will appear after the first daily refresh.</text>'
+    s+=f'<text x="968" y="218" text-anchor="end" class="mono" font-size="9" fill="{MUTED}">UPDATED {data.get("updated_at","—")}</text>'
     save("99-contributions.svg",s)
 
 def main():
