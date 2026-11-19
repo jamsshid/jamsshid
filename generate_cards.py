@@ -205,7 +205,7 @@ def graph(data,fonts,static):
     muted="#8B949E"
     palette=["#161B22","#0E4429","#006D32","#26A641","#39D353"]
     s=start(width,height,3.0,static,fonts)
-    s+=f'<a xlink:href="https://github.com/jamsshid?tab=overview#contributions" target="_blank"><rect x="1" y="1" width="{width-2}" height="{height-2}" rx="8" fill="{background}" stroke="{border}"/>'
+    s+=f'<rect x="1" y="1" width="{width-2}" height="{height-2}" rx="8" fill="{background}" stroke="{border}"/>'
     total=int(data.get("total_contributions",sum(int(d.get("count",0)) for d in days)))
     s+=f'<text x="30" y="31" font-size="20" fill="{text}">{total} contributions in the last year</text>'
     if days:
@@ -252,8 +252,6 @@ def graph(data,fonts,static):
         s+=f'<text x="{legend_x+5*18+5}" y="{legend_y}" font-size="12" fill="{muted}">More</text>'
     else:
         s+=f'<text x="30" y="100" font-size="14" fill="{muted}">Contribution data is not available yet.</text>'
-    s+="</a>"
-    s+="</a>"
     save("99-contributions.svg",s)
 
 def main():
