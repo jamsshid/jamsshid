@@ -53,15 +53,15 @@ def embedded_fonts():
                        {"User-Agent":"Mozilla/5.0"}).decode()
             # Google Fonts no longer consistently includes /* latin */ comments.
             # Select the @font-face block whose Unicode range covers basic Latin.
-            face_blocks = re.findall(r"@font-face\\s*\\{([^}]+)\\}", css, flags=re.I)
+            face_blocks = re.findall(r"@font-face\s*\{([^}]+)\}", css, flags=re.I)
             latin_block = next(
                 (block for block in face_blocks
-                 if re.search(r"unicode-range\\s*:[^;]*U\\+0000-00FF", block, flags=re.I)),
+                 if re.search(r"unicode-range\s*:[^;]*U\+0000-00FF", block, flags=re.I)),
                 None,
             )
             if latin_block is None:
                 raise RuntimeError("Google Fonts CSS has no identifiable Latin subset")
-            urls = re.findall(r"url\\((https://[^)]+\\.woff2)(?:\\?[^)]*)?\\)", latin_block)
+            urls = re.findall(r"url\((https://[^)]+\.woff2)(?:\?[^)]*)?\)", latin_block)
             if not urls:
                 raise RuntimeError("Google Fonts Latin subset has no WOFF2 source")
             source = FONT_CACHE / f"{out_name}-source.woff2"
