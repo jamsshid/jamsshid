@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="108" viewBox="0 0 320 108"><style>
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.enter{opacity:0;animation:rise .8s cubic-bezier(.2,.75,.2,1) .2s both}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;opacity:1!important;transform:none!important}}
+text{font-family:"Plus Jakarta Sans",Arial,sans-serif}.mono{font-family:"JetBrains Mono",monospace}
+</style><a xlink:href="https://linkedin.com/in/jamsshid" target="_blank"><g class="enter"><rect x="1" y="1" width="318" height="106" rx="20" fill="#fff" stroke="#E2E8F0"/><rect x="17" y="21" width="42" height="42" rx="12" fill="#EFF4FF"/><text x="38" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#2563EB">in</text><text x="76" y="39" class="mono" font-size="11" fill="#2563EB">LINKEDIN</text><text x="76" y="63" font-size="13" fill="#0A0F1C">linkedin.com/in/jamsshid</text></g></a></svg>
