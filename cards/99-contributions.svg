@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="178" viewBox="0 0 1000 178"><style>
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.enter{opacity:0;animation:rise .8s cubic-bezier(.2,.75,.2,1) .2s both}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;opacity:1!important;transform:none!important}}
+text{font-family:"Plus Jakarta Sans",Arial,sans-serif}.mono{font-family:"JetBrains Mono",monospace}
+</style><rect x="1" y="1" width="998" height="176" rx="20" fill="#fff" stroke="#E2E8F0"/><text x="28" y="33" font-size="19" font-weight="700" fill="#0A0F1C">Contribution graph</text><text x="28" y="90" font-size="14" fill="#475569">Contribution activity will appear after the first daily refresh.</text></svg>
