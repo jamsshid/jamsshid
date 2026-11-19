@@ -107,7 +107,8 @@ def refresh_data():
     for d in days:
         run=run+1 if d["contributionCount"]>0 else 0
         longest=max(longest,run)
-    busiest=max(weekday_counts,key=weekday_counts.get) if weekday_counts else "—"
+    weekday_names=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+    busiest=weekday_names[max(weekday_counts,key=weekday_counts.get)] if weekday_counts else "—"
     best=max(days,key=lambda d:d["contributionCount"],default={"date":"—","contributionCount":0})
     data={
       "updated_at":today.isoformat(),"total_contributions":cal["totalContributions"],
@@ -193,51 +194,60 @@ def repo_card(repo,index,fonts,static):
 
 def graph(data,fonts,static):
     days=data.get("days",[])
-    s=start(1000,232,3.0,static,fonts)+bg(1000,232)
-    total=data.get("total_contributions",sum(int(d.get("count",0)) for d in days))
-    s+=f'<text x="28" y="32" font-size="20" font-weight="600" fill="{INK}">{total} contributions in the last year</text>'
-    palette=["#161B22","#DBEAFE","#93C5FD","#3B82F6","#1D4ED8"]
+    width,height=1000,242
+    background="#0D1117"
+    border="#30363D"
+    text="#E6EDF3"
+    muted="#8B949E"
+    palette=["#161B22","#102A43","#174A75","#2166A5","#3B82F6"]
+    s=start(width,height,3.0,static,fonts)
+    s+=f'<rect x="1" y="1" width="{width-2}" height="{height-2}" rx="8" fill="{background}" stroke="{border}"/>'
+    total=int(data.get("total_contributions",sum(int(d.get("count",0)) for d in days)))
+    s+=f'<text x="30" y="31" font-size="20" fill="{text}">{total} contributions in the last year</text>'
     if days:
         parsed=[(date.fromisoformat(d["date"]),int(d.get("count",0))) for d in days]
-        first=parsed[0][0]
-        # GitHub contribution weeks start on Sunday (weekday index 0).
-        calendar_start=first-timedelta(days=(first.weekday()+1)%7)
-        last=parsed[-1][0]
-        left,cell,gap,grid_top=78,12,4,76
+        first,last=parsed[0][0],parsed[-1][0]
+        weeks=((last-first).days//7)+1
+        cell,gap=12,4
         step=cell+gap
-        # Month headings sit above the first week containing each month.
-        months=[]
-        cursor=date(calendar_start.year,calendar_start.month,1)
-        while cursor<=last:
-            month_date=max(cursor,calendar_start)
-            col=(month_date-calendar_start).days//7
-            label=cursor.strftime("%b")
-            if not months or months[-1][1]!=col:
-                months.append((label,col))
-            cursor=(date(cursor.year+1,1,1) if cursor.month==12 else date(cursor.year,cursor.month+1,1))
-        for label,col in months:
+        left,top=78,66
+        # GitHub's API calendar weeks start on Sunday; the visual rows are Monday-Sunday.
+        # Keep the first API date in column zero (Sunday is the bottom row).
+        month_cursor=date(first.year,first.month,1)
+        previous_x=-100
+        while month_cursor<=last:
+            col=max(0,(month_cursor-first).days//7)
             x=left+col*step
-            s+=f'<text x="{x}" y="61" font-size="13" fill="{MUTED}">{label}</text>'
-        # GitHub-style weekday labels; rows are Sunday through Saturday.
-        for label,row in [("Mon",1),("Wed",3),("Fri",5)]:
-            y=grid_top+row*step+10
-            s+=f'<text x="50" y="{y}" text-anchor="end" font-size="12" fill="{MUTED}">{label}</text>'
-        for day,count in parsed:
-            offset=(day-calendar_start).days
-            col,row=offset//7,(day.weekday()+1)%7
-            level=0 if count==0 else 1 if count<3 else 2 if count<6 else 3 if count<10 else 4
-            x,y=left+col*step,grid_top+row*step
-            color=palette[level]
-            s+=f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2.5" fill="{color}"><title>{day.isoformat()}: {count} contributions</title></rect>'
-        legend_y=210
-        s+=f'<text x="52" y="{legend_y+10}" font-size="11" fill="{MUTED}">Less</text>'
-        legend_x=84
+            label=month_cursor.strftime("%b")
+            if x-previous_x>=34:
+                s+=f'<text x="{x}" y="53" font-size="13" fill="{text}">{label}</text>'
+                previous_x=x
+            if month_cursor.month==12:
+                month_cursor=date(month_cursor.year+1,1,1)
+            else:
+                month_cursor=date(month_cursor.year,month_cursor.month+1,1)
+        for label,row in [("Mon",0),("Wed",2),("Fri",4)]:
+            y=top+row*step+10
+            s+=f'<text x="38" y="{y}" font-size="13" fill="{text}">{label}</text>'
+        counts={d.isoformat():count for d,count in parsed}
+        for col in range(weeks):
+            for row in range(7):
+                current=first+timedelta(days=col*7+((row+1)%7))
+                if current>last:
+                    continue
+                count=counts.get(current.isoformat(),0)
+                level=0 if count==0 else 1 if count<3 else 2 if count<6 else 3 if count<10 else 4
+                x=left+col*step
+                y=top+row*step
+                s+=f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2" fill="{palette[level]}"><title>{current.isoformat()}: {count} contributions</title></rect>'
+        legend_y=top+7*step+9
+        s+=f'<text x="30" y="{legend_y}" font-size="12" fill="{muted}">Less</text>'
+        legend_x=78
         for i,color in enumerate(palette):
-            s+=f'<rect x="{legend_x+i*18}" y="{legend_y}" width="12" height="12" rx="2.5" fill="{color}"/>'
-        s+=f'<text x="{legend_x+5*18+5}" y="{legend_y+10}" font-size="11" fill="{MUTED}">More</text>'
+            s+=f'<rect x="{legend_x+i*18}" y="{legend_y-11}" width="12" height="12" rx="3" fill="{color}"/>'
+        s+=f'<text x="{legend_x+5*18+5}" y="{legend_y}" font-size="12" fill="{muted}">More</text>'
     else:
-        s+=f'<text x="28" y="115" font-size="14" fill="{MUTED}">Contribution activity will appear after the first daily refresh.</text>'
-    s+=f'<text x="968" y="218" text-anchor="end" class="mono" font-size="9" fill="{MUTED}">UPDATED {data.get("updated_at","—")}</text>'
+        s+=f'<text x="30" y="100" font-size="14" fill="{muted}">Contribution data is not available yet.</text>'
     save("99-contributions.svg",s)
 
 def main():
