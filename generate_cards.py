@@ -20,9 +20,10 @@ USER = "jamsshid"
 STATIC = os.getenv("STATIC", "0").strip().lower() in {"1", "true", "yes"}
 NAME = "Jamshid Omonkeldiev"
 TAGLINE = "Python Backend Developer building reliable APIs and AI-powered products."
-BLUE, BLUE_DARK, BLUE_PALE = "#2563EB", "#1D4FD7", "#EFF4FF"
-INK, MUTED, BORDER, WHITE = "#0A0F1C", "#475569", "#E2E8F0", "#FFFFFF"
-GREEN = "#10B981"
+BLUE, BLUE_DARK, BLUE_PALE = "#58A6FF", "#79C0FF", "#172B45"
+INK, MUTED, BORDER, WHITE = "#E6EDF3", "#8B949E", "#30363D", "#161B22"
+GREEN = "#3FB950"
+DARK_BG = "#0D1117"
 REPOS = [
     ("E-Commerce API", "ecommerce_api", "REST API with JWT authentication, Stripe checkout and webhooks.", "Django · DRF · PostgreSQL · Stripe · Docker"),
     ("Finance Tracker", "finance-tracker", "Personal finance dashboard with transaction insights and an AI assistant.", "Python · Streamlit · PostgreSQL · Cohere"),
@@ -142,19 +143,20 @@ def start(w,h,delay,static,fonts):
     <style>{fonts}text{{font-family:"Plus Jakarta Sans",Arial,sans-serif}}.mono{{font-family:"JetBrains Mono",monospace}}{motion}</style>'''
 
 def bg(w,h,fill=WHITE):
-    return f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="20" fill="{fill}" stroke="{BORDER}"/>'
+    return f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="20" fill="{DARK_BG}" stroke="{BORDER}"/>'
 def save(name,body):
     OUT.mkdir(exist_ok=True)
     (OUT/name).write_text(body+"</svg>\n",encoding="utf-8")
 
 def hero(fonts,static):
-    s=start(1000,238,0,static,fonts)+bg(1000,238,"#EFF4FF")
-    s+='<circle cx="900" cy="22" r="120" fill="#DBE5FF" opacity=".55"/><g class="enter">'
+    s=start(1000,238,0,static,fonts)+bg(1000,238,DARK_BG)
+    s+='<circle cx="900" cy="22" r="120" fill="#172B45" opacity=".7"/><a xlink:href="https://github.com/jamsshid" target="_blank"><g class="enter">'
     s+=f'<text x="44" y="48" class="mono" font-size="12" letter-spacing="2" fill="{BLUE}">PYTHON BACKEND DEVELOPER · RIGA, LATVIA</text>'
     s+=f'<text x="44" y="115" font-size="42" font-weight="800" fill="{INK}">{e(NAME)}</text>'
     s+=f'<text x="46" y="157" font-size="16" fill="{MUTED}">{e(TAGLINE)}</text>'
     s+=f'<text x="46" y="200" class="mono" font-size="12" fill="{BLUE_DARK}">PYTHON  /  DJANGO  /  FASTAPI  /  POSTGRESQL  /  DOCKER</text></g>'
     s+=f'<circle cx="858" cy="119" r="65" fill="{WHITE}" stroke="{BORDER}" stroke-width="2"/><text x="858" y="138" text-anchor="middle" font-size="54" font-weight="800" fill="{BLUE}">J</text><circle cx="910" cy="171" r="9" fill="{GREEN}" stroke="{WHITE}" stroke-width="4"/>'
+    s+="</g></a>"
     save("01-hero.svg",s)
 
 def links(fonts,static):
@@ -168,7 +170,8 @@ def links(fonts,static):
 
 def activity(data,fonts,static):
     s=start(1000,304,1.0,static,fonts)+bg(1000,304)
-    s+=f'<text x="30" y="39" font-size="20" font-weight="700" fill="{INK}">Contribution overview</text>'
+    s+='<a xlink:href="https://github.com/jamsshid?tab=overview#contributions" target="_blank">'
+    s+=f'<text x="30" y="39" font-size="20" font-weight="700" fill="{INK}">Contribution overview · view GitHub contributions ↗</text>'
     stats=[("CURRENT STREAK",f'{data.get("current_streak",0)} days'),("ACTIVE DAYS",data.get("active_days",0)),("BUSIEST DAY",data.get("busiest_weekday","—")),("TOTAL CONTRIBUTIONS",data.get("total_contributions",0))]
     for i,(label,value) in enumerate(stats):
         x=32+i*242
@@ -184,6 +187,7 @@ def activity(data,fonts,static):
         s+=f'<text x="{x+22}" y="271" text-anchor="middle" class="mono" font-size="9" fill="{MUTED}">{m["month"][5:]}</text>'
     if not months:s+=f'<text x="42" y="210" font-size="14" fill="{MUTED}">Monthly contribution history appears after the first daily refresh.</text>'
     s+=f'<text x="968" y="289" text-anchor="end" class="mono" font-size="9" fill="{MUTED}">UPDATED {data.get("updated_at","—")}</text>'
+    s+="</a>"
     save("03-activity.svg",s)
 
 def repo_card(repo,index,fonts,static):
@@ -199,9 +203,9 @@ def graph(data,fonts,static):
     border="#30363D"
     text="#E6EDF3"
     muted="#8B949E"
-    palette=["#161B22","#102A43","#174A75","#2166A5","#3B82F6"]
+    palette=["#161B22","#0E4429","#006D32","#26A641","#39D353"]
     s=start(width,height,3.0,static,fonts)
-    s+=f'<rect x="1" y="1" width="{width-2}" height="{height-2}" rx="8" fill="{background}" stroke="{border}"/>'
+    s+=f'<a xlink:href="https://github.com/jamsshid?tab=overview#contributions" target="_blank"><rect x="1" y="1" width="{width-2}" height="{height-2}" rx="8" fill="{background}" stroke="{border}"/>'
     total=int(data.get("total_contributions",sum(int(d.get("count",0)) for d in days)))
     s+=f'<text x="30" y="31" font-size="20" fill="{text}">{total} contributions in the last year</text>'
     if days:
@@ -248,6 +252,7 @@ def graph(data,fonts,static):
         s+=f'<text x="{legend_x+5*18+5}" y="{legend_y}" font-size="12" fill="{muted}">More</text>'
     else:
         s+=f'<text x="30" y="100" font-size="14" fill="{muted}">Contribution data is not available yet.</text>'
+    s+="</a>"
     save("99-contributions.svg",s)
 
 def main():
