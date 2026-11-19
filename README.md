@@ -18,12 +18,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/jamsshid?tab=overview#contributions">
-    <img src="cards/99-contributions.svg" width="100%" alt="GitHub contribution calendar — open contributions">
-  </a>
-</p>
-
-<p align="center">
   <a href="https://github.com/jamsshid/ecommerce_api"><img src="cards/repo-01.svg" width="100%" alt="E-Commerce API repository"></a>
 </p>
 <p align="center">
