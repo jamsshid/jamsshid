@@ -31,7 +31,7 @@ jobs:
       - name: Commit refreshed data and cards
         run: |
           git config user.name "jamsshid"
-          git config user.email "211209409+jamsshid@users.noreply.github.com"
+          git config user.email "omonkeldievj@gmail.com"
           git add data/contributions.json cards/
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh animated profile cards"
