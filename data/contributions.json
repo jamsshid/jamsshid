@@ -6,7 +6,7 @@
   "active_days": 23,
   "current_streak": 4,
   "longest_streak": 4,
-  "busiest_weekday": 1,
+  "busiest_weekday": "Monday",
   "busiest_date": "2026-11-16",
   "busiest_date_count": 31,
   "months": [
@@ -1912,21 +1912,21 @@
       "slug": "ecommerce_api",
       "url": "https://github.com/jamsshid/ecommerce_api",
       "description": "REST API with JWT authentication, Stripe checkout and webhooks.",
-      "stack": "Django \u00b7 DRF \u00b7 PostgreSQL \u00b7 Stripe \u00b7 Docker"
+      "stack": "Django · DRF · PostgreSQL · Stripe · Docker"
     },
     {
       "name": "Finance Tracker",
       "slug": "finance-tracker",
       "url": "https://github.com/jamsshid/finance-tracker",
       "description": "Personal finance dashboard with transaction insights and an AI assistant.",
-      "stack": "Python \u00b7 Streamlit \u00b7 PostgreSQL \u00b7 Cohere"
+      "stack": "Python · Streamlit · PostgreSQL · Cohere"
     },
     {
       "name": "Fids Monro Bot",
       "slug": "fids_monro_bot",
       "url": "https://github.com/jamsshid/fids_monro_bot",
       "description": "Telegram ordering bot with catalogue, order flow and admin features.",
-      "stack": "Python \u00b7 aiogram \u00b7 Telegram Bot API"
+      "stack": "Python · aiogram · Telegram Bot API"
     }
   ]
 }
