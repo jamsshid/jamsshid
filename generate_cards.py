@@ -1,144 +1,215 @@
 #!/usr/bin/env python3
-"""Render animated, GitHub-safe SVG profile cards from data/contributions.json."""
+"""Generate animated SVG cards for a GitHub profile README.
+
+  python generate_cards.py
+  STATIC=1 python generate_cards.py  # final frame for screenshots
+  python generate_cards.py --refresh-data  # GraphQL refresh; needs GITHUB_TOKEN
+"""
 from __future__ import annotations
-import base64, json, os, re, subprocess
-from pathlib import Path
+import argparse, base64, io, json, os, re, urllib.request
+from collections import defaultdict
 from datetime import date, timedelta
-from html import escape
+from pathlib import Path
+from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parent
-DATA = ROOT / "data" / "contributions.json"
+DATA = ROOT / "data/contributions.json"
 OUT = ROOT / "cards"
-STATIC = os.getenv("STATIC", "0") == "1"
-BG, PANEL, TEXT, MUTED = "#0d1117", "#161b22", "#e6edf3", "#8b949e"
-ACCENT, BLUE, GREEN = "#3670A0", "#58a6ff", "#2ea043"
-FONT = "Inter, Segoe UI, Arial, sans-serif"
+FONT_CACHE = ROOT / ".font-cache"
+USER = "jamsshid"
+NAME = "Jamshid Omonkeldiev"
+TAGLINE = "Python Backend Developer building reliable APIs and AI-powered products."
+BLUE, BLUE_DARK, BLUE_PALE = "#2563EB", "#1D4FD7", "#EFF4FF"
+INK, MUTED, BORDER, WHITE = "#0A0F1C", "#475569", "#E2E8F0", "#FFFFFF"
+GREEN = "#10B981"
+REPOS = [
+    ("E-Commerce API", "ecommerce_api", "REST API with JWT authentication, Stripe checkout and webhooks.", "Django · DRF · PostgreSQL · Stripe · Docker"),
+    ("Finance Tracker", "finance-tracker", "Personal finance dashboard with transaction insights and an AI assistant.", "Python · Streamlit · PostgreSQL · Cohere"),
+    ("Fids Monro Bot", "fids_monro_bot", "Telegram ordering bot with catalogue, order flow and admin features.", "Python · aiogram · Telegram Bot API"),
+]
+
+def e(v): return escape(str(v), {'"': "&quot;"})
+def http(url, headers=None):
+    req = urllib.request.Request(url, headers=headers or {"User-Agent":"jamsshid-profile-cards"})
+    with urllib.request.urlopen(req, timeout=30) as r: return r.read()
+
+def embedded_fonts():
+    """Subset Plus Jakarta Sans and JetBrains Mono to Latin glyphs, embed as WOFF2."""
+    try:
+        from fontTools.ttLib import TTFont
+        from fontTools.subset import Options, Subsetter
+    except ImportError:
+        print("fontTools unavailable; using system font fallbacks.")
+        return ""
+    FONT_CACHE.mkdir(exist_ok=True)
+    result = []
+    for family, query, out_name in [
+        ("Plus Jakarta Sans", "Plus+Jakarta+Sans:wght@400;500;600;700;800", "plus-jakarta"),
+        ("JetBrains Mono", "JetBrains+Mono:wght@400;500;600", "jetbrains-mono"),
+    ]:
+        try:
+            css = http(f"https://fonts.googleapis.com/css2?family={query}&display=swap",
+                       {"User-Agent":"Mozilla/5.0"}).decode()
+            blocks = re.split(r"/\* latin \*/", css)
+            urls = re.findall(r"url\((https://[^)]+\.woff2)\)", blocks[-1] if len(blocks)>1 else css)
+            if not urls: raise RuntimeError("Google Fonts did not return a Latin WOFF2 subset")
+            source = FONT_CACHE / f"{out_name}-source.woff2"
+            if not source.exists(): source.write_bytes(http(urls[-1]))
+            font = TTFont(str(source))
+            options = Options(); options.flavor = "woff2"
+            subsetter = Subsetter(options=options)
+            subsetter.populate(unicodes=list(range(32,127))+[0x2013,0x2014,0x2022,0x00B7,0x2197])
+            subsetter.subset(font)
+            stream = io.BytesIO(); font.flavor = "woff2"; font.save(stream)
+            b64 = base64.b64encode(stream.getvalue()).decode()
+            result.append(f'@font-face{{font-family:"{family}";src:url(data:font/woff2;base64,{b64}) format("woff2");font-weight:400 800;font-style:normal}}')
+        except Exception as ex:
+            print(f"Could not embed {family}: {ex}")
+    return "\n".join(result)
+
+def refresh_data():
+    token = os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    if not token: raise SystemExit("GITHUB_TOKEN is required for --refresh-data")
+    query = """query($login:String!){user(login:$login){contributionsCollection{totalCommitContributions restrictedContributionsCount contributionCalendar{totalContributions weeks{contributionDays{date contributionCount weekday}}}}}}"""
+    body = json.dumps({"query":query,"variables":{"login":USER}}).encode()
+    req = urllib.request.Request("https://api.github.com/graphql", data=body, headers={
+        "Authorization":f"Bearer {token}","Content-Type":"application/json","User-Agent":USER})
+    with urllib.request.urlopen(req,timeout=30) as response: payload=json.load(response)
+    if payload.get("errors") or not payload.get("data",{}).get("user"):
+        raise RuntimeError(f"GitHub GraphQL failed: {payload.get('errors')}")
+    coll=payload["data"]["user"]["contributionsCollection"]
+    cal=coll["contributionCalendar"]
+    days=[d for week in cal["weeks"] for d in week["contributionDays"]]
+    active=[d for d in days if d["contributionCount"]>0]
+    months=defaultdict(int)
+    weekday_counts=defaultdict(int)
+    for d in days:
+        months[d["date"][:7]] += d["contributionCount"]
+        weekday_counts[d["weekday"]] += d["contributionCount"]
+    today=date.today()
+    bydate={date.fromisoformat(d["date"]):d["contributionCount"] for d in days}
+    cursor=today if bydate.get(today,0)>0 else today-timedelta(days=1)
+    current=0
+    while bydate.get(cursor,0)>0:
+        current+=1; cursor-=timedelta(days=1)
+    longest=run=0
+    for d in days:
+        run=run+1 if d["contributionCount"]>0 else 0
+        longest=max(longest,run)
+    busiest=max(weekday_counts,key=weekday_counts.get) if weekday_counts else "—"
+    best=max(days,key=lambda d:d["contributionCount"],default={"date":"—","contributionCount":0})
+    data={
+      "updated_at":today.isoformat(),"total_contributions":cal["totalContributions"],
+      "total_commit_contributions":coll["totalCommitContributions"],
+      "restricted_contributions":coll["restrictedContributionsCount"],
+      "active_days":len(active),"current_streak":current,"longest_streak":longest,
+      "busiest_weekday":busiest,"busiest_date":best["date"],
+      "busiest_date_count":best["contributionCount"],
+      "months":[{"month":k,"count":v} for k,v in sorted(months.items())[-12:]],
+      "days":[{"date":d["date"],"count":d["contributionCount"],"weekday":d["weekday"]} for d in days],
+      "featured_repos":[{"name":n,"slug":slug,"url":f"https://github.com/{USER}/{slug}","description":desc,"stack":stack} for n,slug,desc,stack in REPOS]
+    }
+    DATA.parent.mkdir(parents=True,exist_ok=True)
+    DATA.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8")
+    print(f"Updated contribution data: {len(days)} days, {len(months)} months")
 
 def load_data():
-    if not DATA.exists():
-        raise SystemExit("Missing data/contributions.json. Run with GITHUB_TOKEN to refresh it.")
-    return json.loads(DATA.read_text())
+    if not DATA.exists(): return {"months":[],"days":[]}
+    return json.loads(DATA.read_text(encoding="utf-8"))
 
-def font_css():
-    source = os.getenv("PROFILE_FONT", "")
-    if not source or not Path(source).exists():
-        return ""
-    target = OUT / "profile-subset.woff2"
-    try:
-        subprocess.run(["pyftsubset", source, "--output-file=" + str(target),
-                        "--flavor=woff2", "--unicodes=U+0000-00FF",
-                        "--layout-features=*", "--name-IDs=0,1,2,4,6"],
-                       check=True, capture_output=True)
-        encoded = base64.b64encode(target.read_bytes()).decode()
-        return f"@font-face{{font-family:Profile;src:url(data:font/woff2;base64,{encoded}) format('woff2');font-weight:100 900}}"
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        print("pyftsubset/font unavailable; using system font stack.")
-        return ""
-
-def svg_start(width, height, delay=0):
-    motion = "" if STATIC else f"""
-      .enter{{opacity:0;transform:translateY(18px);animation:rise .8s cubic-bezier(.2,.8,.2,1) {delay}s forwards}}
-      @keyframes rise{{to{{opacity:1;transform:translateY(0)}}}}
-      @media(prefers-reduced-motion:reduce){{.enter{{animation:none;opacity:1;transform:none}}}}
+def start(w,h,delay,static,fonts):
+    motion = "" if static else f"""
+      @keyframes rise{{from{{opacity:0;transform:translateY(16px)}}to{{opacity:1;transform:translateY(0)}}}}
+      .enter{{opacity:0;animation:rise .8s cubic-bezier(.2,.75,.2,1) {delay:.2f}s both}}
+      @keyframes reveal{{to{{stroke-dashoffset:0}}}}
+      .line{{stroke-dasharray:1000;stroke-dashoffset:1000;animation:reveal 1.5s ease {delay+.35:.2f}s forwards}}
+      @media(prefers-reduced-motion:reduce){{*,*::before,*::after{{animation:none!important;transition:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}}}}
     """
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
-    <style>{font_css()}{motion} text{{font-family:{FONT}}} .title{{fill:{TEXT};font-size:22px;font-weight:700}} .muted{{fill:{MUTED}}}</style>
-    <rect width="100%" height="100%" rx="18" fill="{BG}"/>
-    <rect x="1" y="1" width="{width-2}" height="{height-2}" rx="17" fill="none" stroke="#30363d"/>
-    '''
-def save(name, content):
-    (OUT / name).write_text(content + "</svg>\n", encoding="utf-8")
+    if static: motion="@media(prefers-reduced-motion:reduce){*{animation:none!important}}"
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
+    <style>{fonts}text{{font-family:"Plus Jakarta Sans",Arial,sans-serif}}.mono{{font-family:"JetBrains Mono",monospace}}{motion}</style>'''
 
-def card_hero(profile):
-    s = svg_start(1000, 220, 0) + '<g class="enter">'
-    s += f'<text x="42" y="92" class="title" font-size="42">{escape(profile.get("name","Jamshid Omonkeldiev"))}</text>'
-    s += f'<text x="44" y="132" fill="{BLUE}" font-size="19">{escape(profile.get("tagline","Python Backend Developer · Backend + AI"))}</text>'
-    s += f'<text x="44" y="174" class="muted" font-size="15">{escape(profile.get("location","Riga, Latvia"))}  ·  {escape(profile.get("focus","Building reliable backend systems and AI-powered products"))}</text>'
-    portrait = profile.get("portrait_url")
-    if portrait:
-        s += f'<clipPath id="avatar"><circle cx="885" cy="110" r="67"/></clipPath><image x="{818}" y="43" width="134" height="134" href="{escape(portrait,True)}" clip-path="url(#avatar)" preserveAspectRatio="xMidYMid slice"/>'
-        s += '<circle cx="885" cy="110" r="68" fill="none" stroke="#3670A0" stroke-width="3"/>'
-    s += "</g>"
-    save("01-hero.svg", s)
+def bg(w,h,fill=WHITE):
+    return f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="20" fill="{fill}" stroke="{BORDER}"/>'
+def save(name,body):
+    OUT.mkdir(exist_ok=True)
+    (OUT/name).write_text(body+"</svg>\n",encoding="utf-8")
 
-def card_tiles(profile):
-    tiles = profile.get("tiles", [
-        {"label":"GitHub","url":"https://github.com/jamsshid","detail":"Code & projects","color":"#3670A0"},
-        {"label":"LinkedIn","url":"https://linkedin.com/in/jamsshid","detail":"Professional profile","color":"#0A66C2"},
-        {"label":"Instagram","url":"https://instagram.com/jamsshid.o","detail":"Social","color":"#C13584"}])
-    s = svg_start(1000, 150, .5)
-    for i,t in enumerate(tiles[:3]):
-        x = 12 + i*330
-        s += f'<a href="{escape(t["url"],True)}"><g class="enter" style="animation-delay:{.5+i*.12}s"><rect x="{x}" y="12" width="325" height="126" rx="14" fill="{PANEL}" stroke="#30363d"/><rect x="{x}" y="12" width="5" height="126" rx="2" fill="{escape(t.get("color",ACCENT),True)}"/><text x="{x+22}" y="61" fill="{TEXT}" font-size="21" font-weight="700">{escape(t["label"])}</text><text x="{x+22}" y="91" class="muted" font-size="14">{escape(t.get("detail","Open profile"))}</text><text x="{x+295}" y="91" fill="{BLUE}" font-size="20">↗</text></g></a>'
+def hero(fonts,static):
+    s=start(1000,238,0,static,fonts)+bg(1000,238,"url(#hero-gradient)")
+    s=s.replace("</style>",'<linearGradient id="hero-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#EFF4FF"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></style>')
+    s+='<circle cx="900" cy="22" r="120" fill="#DBE5FF" opacity=".55"/><g class="enter">'
+    s+=f'<text x="44" y="48" class="mono" font-size="12" letter-spacing="2" fill="{BLUE}">PYTHON BACKEND DEVELOPER · RIGA, LATVIA</text>'
+    s+=f'<text x="44" y="115" font-size="42" font-weight="800" fill="{INK}">{e(NAME)}</text>'
+    s+=f'<text x="46" y="157" font-size="16" fill="{MUTED}">{e(TAGLINE)}</text>'
+    s+=f'<text x="46" y="200" class="mono" font-size="12" fill="{BLUE_DARK}">PYTHON  /  DJANGO  /  FASTAPI  /  POSTGRESQL  /  DOCKER</text></g>'
+    s+=f'<circle cx="858" cy="119" r="65" fill="{WHITE}" stroke="{BORDER}" stroke-width="2"/><text x="858" y="138" text-anchor="middle" font-size="54" font-weight="800" fill="{BLUE}">J</text><circle cx="910" cy="171" r="9" fill="{GREEN}" stroke="{WHITE}" stroke-width="4"/>'
+    save("01-hero.svg",s)
+
+def links(fonts,static):
+    s=start(1000,120,.55,static,fonts)
+    items=[("GITHUB","github.com/jamsshid","https://github.com/jamsshid","GH"),("LINKEDIN","linkedin.com/in/jamsshid","https://linkedin.com/in/jamsshid","in"),("PORTFOLIO","Personal website","https://jamsshid.github.io/portfolio","↗")]
+    for i,(label,detail,url,mark) in enumerate(items):
+        x=2+i*333
+        s+=f'<a xlink:href="{url}" target="_blank"><g class="enter" style="animation-delay:{0 if static else .55+i*.14:.2f}s"><rect x="{x}" y="2" width="323" height="108" rx="16" fill="{WHITE}" stroke="{BORDER}"/><rect x="{x+17}" y="22" width="42" height="42" rx="12" fill="{BLUE_PALE}"/><text x="{x+38}" y="49" text-anchor="middle" font-size="16" font-weight="700" fill="{BLUE}">{mark}</text><text x="{x+76}" y="40" class="mono" font-size="11" fill="{BLUE}">{label}</text><text x="{x+76}" y="63" font-size="13" fill="{INK}">{detail}</text></g></a>'
     save("02-links.svg",s)
 
-def metrics(data):
-    days = data.get("days", [])
-    total = sum(int(d.get("count",0)) for d in days)
-    active = sum(int(d.get("count",0)) > 0 for d in days)
-    counts = {}
-    for d in days:
-        if d.get("count",0):
-            weekday = date.fromisoformat(d["date"]).strftime("%A")
-            counts[weekday] = counts.get(weekday,0) + int(d["count"])
-    busiest = max(counts, key=counts.get) if counts else "—"
-    best = int(data.get("longest_streak",0))
-    current = int(data.get("current_streak",0))
-    return total, active, busiest, current, best
-
-def card_activity(data):
-    days = data.get("days", [])
-    months = {}
-    for d in days:
-        key = d["date"][:7]
-        months[key] = months.get(key,0) + int(d.get("count",0))
-    items = sorted(months.items())[-12:]
-    total, active, busiest, current, best = metrics(data)
-    s = svg_start(1000, 310, 1.0) + '<g class="enter"><text x="32" y="48" class="title">Contribution rhythm</text>'
-    labels = [("Current streak",str(current)+" days"),("Active days",str(active)),("Busiest day",busiest),("Longest streak",str(best)+" days")]
-    for i,(k,v) in enumerate(labels):
-        x=32+i*240
-        s += f'<text x="{x}" y="88" class="muted" font-size="13">{k}</text><text x="{x}" y="119" fill="{TEXT}" font-size="23" font-weight="700">{escape(v)}</text>'
-    maxv=max([v for _,v in items] or [1])
-    for i,(month,val) in enumerate(items):
-        x=48+i*76
-        h=110*val/maxv if maxv else 0
-        s += f'<rect x="{x}" y="{250-h}" width="42" height="{h}" rx="5" fill="{ACCENT}"><title>{month}: {val} contributions</title></rect><text x="{x+21}" y="273" text-anchor="middle" class="muted" font-size="10">{month[5:]}</text>'
-    s += f'<text x="32" y="294" class="muted" font-size="11">{total} contributions in the available year</text></g>'
+def activity(data,fonts,static):
+    s=start(1000,304,1.0,static,fonts)+bg(1000,304)
+    s+=f'<text x="30" y="39" font-size="20" font-weight="700" fill="{INK}">Contribution overview</text>'
+    stats=[("CURRENT STREAK",f'{data.get("current_streak",0)} days'),("ACTIVE DAYS",data.get("active_days",0)),("BUSIEST DAY",data.get("busiest_weekday","—")),("TOTAL CONTRIBUTIONS",data.get("total_contributions",0))]
+    for i,(label,value) in enumerate(stats):
+        x=32+i*242
+        s+=f'<text x="{x}" y="76" class="mono" font-size="10" fill="{MUTED}">{label}</text><text x="{x}" y="108" font-size="25" font-weight="700" fill="{BLUE}">{e(value)}</text>'
+    months=data.get("months",[])[-12:]
+    maxv=max([m["count"] for m in months] or [1])
+    for i,m in enumerate(months):
+        x=42+i*78; h=max(2,104*m["count"]/maxv)
+        s+=f'<rect x="{x}" y="{248-h}" width="44" height="{h}" rx="6" fill="{BLUE}" opacity=".9"/>'
+        if not static:
+            s+=f'<animate attributeName="height" from="0" to="{h:.1f}" dur="1s" begin="{1.3+i*.06:.2f}s" fill="freeze"/>'
+        s+=f'<text x="{x+22}" y="271" text-anchor="middle" class="mono" font-size="9" fill="{MUTED}">{m["month"][5:]}</text>'
+    if not months:s+=f'<text x="42" y="210" font-size="14" fill="{MUTED}">Monthly contribution history appears after the first daily refresh.</text>'
+    s+=f'<text x="968" y="289" text-anchor="end" class="mono" font-size="9" fill="{MUTED}">UPDATED {data.get("updated_at","—")}</text>'
     save("03-activity.svg",s)
 
-def card_repo(repo, index):
-    name=repo["name"]; desc=repo.get("description","")
-    lang=repo.get("language") or "Open source"
-    stars=repo.get("stars",0)
-    s=svg_start(1000,150,1.5+index*.35)+'<g class="enter">'
-    s+=f'<a href="{escape(repo["url"],True)}"><rect x="1" y="1" width="998" height="148" rx="17" fill="{BG}" stroke="#30363d"/><text x="32" y="52" fill="{BLUE}" font-size="23" font-weight="700">{escape(name)}</text><text x="32" y="84" class="muted" font-size="15">{escape(desc[:110])}</text><text x="32" y="119" fill="{ACCENT}" font-size="13">{escape(lang)}  ·  ★ {stars}</text><text x="955" y="80" fill="{BLUE}" font-size="24">↗</text></a></g>'
+def repo_card(repo,index,fonts,static):
+    s=start(1000,152,1.65+index*.38,static,fonts)+bg(1000,152)
+    url=repo.get("url",f"https://github.com/{USER}/{repo['slug']}")
+    s+=f'<a xlink:href="{url}" target="_blank"><g class="enter"><rect x="26" y="26" width="52" height="52" rx="14" fill="{BLUE_PALE}"/><text x="52" y="61" text-anchor="middle" font-size="23" font-weight="700" fill="{BLUE}">{"</>"}</text><text x="104" y="48" font-size="21" font-weight="700" fill="{INK}">{e(repo["name"])}</text><text x="104" y="78" font-size="14" fill="{MUTED}">{e(repo.get("description",""))}</text><text x="104" y="116" class="mono" font-size="11" fill="{BLUE}">{e(repo.get("stack",""))}</text><text x="952" y="51" text-anchor="end" font-size="12" fill="{BLUE}">OPEN REPOSITORY ↗</text></g></a>'
     save(f"repo-{index+1:02d}.svg",s)
 
-def card_graph(data):
+def graph(data,fonts,static):
+    s=start(1000,178,3.0,static,fonts)+bg(1000,178)
+    s+=f'<text x="28" y="33" font-size="19" font-weight="700" fill="{INK}">Contribution graph</text>'
     days=data.get("days",[])
-    cells=[]
+    palette=["#EFF4FF","#BED4FD","#7EA6FA","#3B6FF5","#1D4FD7"]
     if days:
-        first=date.fromisoformat(days[0]["date"])
-        start=first-timedelta(days=first.weekday())
-        bydate={d["date"]:int(d.get("count",0)) for d in days}
+        first=date.fromisoformat(days[0]["date"]); start_day=first-timedelta(days=first.weekday())
+        mapping={d["date"]:d["count"] for d in days}
         for i in range(53*7):
-            dt=start+timedelta(days=i)
-            if dt>date.today(): break
-            val=bydate.get(dt.isoformat(),0)
-            level=0 if val==0 else 1 if val<2 else 2 if val<5 else 3 if val<9 else 4
-            x=35+(i//7)*17; y=42+(i%7)*17
-            palette=["#161b22","#0e4429","#006d32","#26a641","#39d353"]
-            cells.append(f'<rect x="{x}" y="{y}" width="12" height="12" rx="2" fill="{palette[level]}"><title>{dt.isoformat()}: {val}</title></rect>')
-    s=svg_start(1000,190,2.1)+'<g class="enter"><text x="32" y="28" class="title">Contribution graph</text>'+''.join(cells)+'</g>'
+            dt=start_day+timedelta(days=i)
+            if dt>date.today():break
+            n=mapping.get(dt.isoformat(),0); level=0 if n==0 else 1 if n<3 else 2 if n<6 else 3 if n<10 else 4
+            x=28+(i//7)*17; y=48+(i%7)*16
+            s+=f'<rect x="{x}" y="{y}" width="12" height="11" rx="2" fill="{palette[level]}"><title>{dt.isoformat()}: {n} contributions</title></rect>'
+    else:s+=f'<text x="28" y="90" font-size="14" fill="{MUTED}">Contribution activity will appear after the first daily refresh.</text>'
+    s+=f'<text x="28" y="165" class="mono" font-size="9" fill="{MUTED}">LESS</text>'
+    for i,c in enumerate(palette):s+=f'<rect x="{72+i*17}" y="156" width="11" height="10" rx="2" fill="{c}"/>'
+    s+=f'<text x="165" y="165" class="mono" font-size="9" fill="{MUTED}">MORE</text>'
     save("99-contributions.svg",s)
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--refresh-data",action="store_true")
+    args=parser.parse_args()
+    if args.refresh_data:refresh_data()
+    data=json.loads(DATA.read_text()) if DATA.exists() else {}
+    fonts=embedded_fonts()
     OUT.mkdir(exist_ok=True)
-    data=load_data()
-    profile=data.get("profile",{})
-    card_hero(profile); card_tiles(profile); card_activity(data)
-    for i,repo in enumerate(data.get("featured_repos",[])[:6]): card_repo(repo,i)
-    card_graph(data)
-    print(f"Rendered SVG cards in {OUT} (STATIC={int(STATIC)})")
-if __name__=="__main__": main()
+    hero(fonts,STATIC);links(fonts,STATIC);activity(data,fonts,STATIC)
+    repos=data.get("featured_repos") or [{"name":n,"slug":slug,"url":f"https://github.com/{USER}/{slug}","description":desc,"stack":stack} for n,slug,desc,stack in REPOS]
+    for i,repo in enumerate(repos[:6]):repo_card(repo,i,fonts,STATIC)
+    graph(data,fonts,STATIC)
+    print(f"Rendered {len(list(OUT.glob('*.svg')))} SVG cards (STATIC={int(STATIC)})")
+if __name__=="__main__":main()
