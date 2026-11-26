@@ -102,11 +102,26 @@ class Jamshid:
   </a>
 </p>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./profile-3d-contrib/profile-night-rainbow.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./profile-3d-contrib/profile-season.svg">
+  <img alt="3D GitHub contribution graph" src="./profile-3d-contrib/profile-night-rainbow.svg" width="100%">
+</picture>
+
+### What these towers mean
+
+- **Tall towers** — Weeks of intensive coding and building
+- **Flat stretches** — Quieter periods focused on research and learning
+- **Weekend spikes** — Side projects and spontaneous coding sessions
+
+<p align="center">
+  <i>Every contribution tells a little story. Keep building.</i>
+</p>
+
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=jamsshid&show_icons=true&hide_border=true&bg_color=0D1117&title_color=8B5CF6&icon_color=06B6D4&text_color=C9D1D9&ring_color=8B5CF6" height="165" alt="GitHub statistics">
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=jamsshid&layout=compact&hide_border=true&bg_color=0D1117&title_color=8B5CF6&text_color=C9D1D9" height="165" alt="Most used languages">
 </p>
-
 ---
 
 <h2 align="center">🌌 &nbsp; THE JOURNEY CONTINUES &nbsp; 🌌</h2>
